@@ -10,6 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas = ["user_service"]
 }
 
 model User {
@@ -21,4 +22,5 @@ model User {
   birthdate     String
   gender        String
   profile_image String?
+  @@schema("user_service")
 }

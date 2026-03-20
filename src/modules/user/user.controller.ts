@@ -12,11 +12,8 @@ export const userController = new Elysia({ prefix: "/user" })
                 return { message: "Email already exists" };
             }
 
-            const newUser = await service.createUser(body);
-            return {
-                message: "User created successfully",
-                user: newUser,
-            };
+            const user = await service.createUser(body);
+            return user;
         } catch (error) {
             console.error(error);
         }
