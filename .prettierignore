@@ -1,0 +1,9 @@
+node_modules
+bun.lock
+dist
+build
+coverage
+.env
+.env.*
+src/generated
+prisma/migrations
