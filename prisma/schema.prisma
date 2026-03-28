@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas = ["user_service"]
+  schemas  = ["user_service"]
 }
 
 model User {
@@ -18,9 +18,18 @@ model User {
   email         String   @unique
   first_name    String
   last_name     String
+  role          Role     @default(user)
   phone_number  String
   birthdate     String
   gender        String
   profile_image String?
+
+  @@schema("user_service")
+}
+
+enum Role {
+  user
+  organizer
+
   @@schema("user_service")
 }
