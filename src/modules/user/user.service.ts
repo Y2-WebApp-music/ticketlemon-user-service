@@ -2,27 +2,27 @@ import { prisma } from "../../lib/db";
 import { UserSchema } from "./user.model";
 
 export class UserService {
-  async createUser(data: UserSchema) {
+  async create(data: UserSchema) {
     return prisma.user.create({ data });
   }
 
-  async getAllUsers() {
+  async getAll() {
     return prisma.user.findMany();
   }
 
-  async getUserById(id: string) {
+  async getById(id: string) {
     return prisma.user.findUnique({ where: { id } });
   }
 
-  async updateUser(id: string, data: Partial<UserSchema>) {
+  async update(id: string, data: Partial<UserSchema>) {
     return prisma.user.update({ where: { id }, data });
   }
 
-  async deleteUser(id: string) {
+  async delete(id: string) {
     return prisma.user.delete({ where: { id } });
   }
 
-  async findEmail(email: string) {
+  async findByEmail(email: string) {
     return prisma.user.findUnique({ where: { email } });
   }
 }

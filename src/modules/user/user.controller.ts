@@ -1,73 +1,93 @@
 import { Elysia, t } from "elysia";
 import { UserService } from "./user.service";
 import { UserSchema } from "./user.model";
+import { HttpStatus } from "../../types/http";
 
 const service = new UserService();
 
 export const userController = new Elysia({ prefix: "/user" })
-  .post(
-    "/",
-    async ({ body }) => {
-      try {
-        const existingUser = await service.findEmail(body.email);
-        if (existingUser) {
-          return { message: "Email already exists" };
-        }
-
-        const user = await service.createUser(body);
-        return user;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    { body: UserSchema },
-  )
-
-  .get("/", async () => {
+  .post("/", async ({ body, status }) => {
     try {
-      const users = await service.getAllUsers();
-      return users;
+      const existingUser = await service.findByEmail(body.email);
+      if (existingUser) {
+        return status(
+          HttpStatus.BAD_REQUEST,
+          { message: "Email already exists" }
+        );
+      }
+
+      const user = await service.create(body);
+      return status(HttpStatus.CREATED, user);
     } catch (error) {
       console.error(error);
+      return status(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }, { body: UserSchema })
+
+  .get("/", async ({ status }) => {
+    try {
+      const users = await service.getAll();
+      return status(HttpStatus.OK, users);
+    } catch (error) {
+      console.error(error);
+      return status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   })
 
-  .get("/:id", async ({ params }) => {
+  .get("/:id", async ({ params: { id }, status }) => {
     try {
-      const user = await service.getUserById(params.id);
+      const user = await service.getById(id);
       if (!user) {
-        return { message: "User not found" };
+        return status(
+          HttpStatus.NOT_FOUND,
+          { message: "User not found" }
+        );
       }
-      return user;
+      return status(HttpStatus.OK, user);
     } catch (error) {
       console.error(error);
+      return status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
   })
 
-  .put(
-    "/:id",
-    async ({ params, body }) => {
-      try {
-        const updatedUser = await service.updateUser(params.id, body);
-        return {
-          message: "User updated successfully",
-          user: updatedUser,
-        };
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    { body: t.Partial(UserSchema) },
-  )
-
-  .delete("/:id", async ({ params }) => {
+  .put("/:id", async ({ params: { id }, body, status }) => {
     try {
-      const deletedUser = await service.deleteUser(params.id);
-      return {
+      const user = await service.getById(id);
+      if (!user) {
+        return status(
+          HttpStatus.NOT_FOUND,
+          { message: "User not found" }
+        );
+      }
+
+      const updatedUser = await service.update(id, body);
+      return status(HttpStatus.OK, {
+        message: "User updated successfully",
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error(error);
+      return status(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }, { body: t.Partial(UserSchema) })
+
+  .delete("/:id", async ({ params: { id }, status }) => {
+    try {
+      const user = await service.getById(id);
+      if (!user) {
+        return status(
+          HttpStatus.NOT_FOUND,
+          { message: "User not found" }
+        );
+      }
+
+      const deletedUser = await service.delete(id);
+      return status(HttpStatus.OK, {
         message: "User deleted successfully",
         user: deletedUser,
-      };
+      });
     } catch (error) {
       console.error(error);
+      return status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  });
+  })
