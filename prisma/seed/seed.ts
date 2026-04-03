@@ -1,7 +1,8 @@
 import { prisma } from "../../src/lib/db";
+import { UserSchema } from "../../src/modules/user/user.model";
 
 async function main() {
-  const users = [
+  const users: UserSchema[] = [
     {
       email: "alex.doe@example.com",
       first_name: "Alex",
@@ -9,7 +10,7 @@ async function main() {
       phone_number: "+1234567890",
       birthdate: "1992-05-15",
       gender: "Non-binary",
-      profile_image: "https://via.placeholder.com/150",
+      profile_image: "https://picsum.photos/200/300",
     },
     {
       email: "jordan.smith@example.com",
@@ -18,7 +19,7 @@ async function main() {
       phone_number: "+1987654321",
       birthdate: "1988-11-02",
       gender: "Male",
-      profile_image: null,
+      profile_image: undefined,
     },
     {
       email: "casey.v@example.com",
@@ -27,7 +28,7 @@ async function main() {
       phone_number: "+1555010203",
       birthdate: "1995-07-22",
       gender: "Female",
-      profile_image: "https://via.placeholder.com/150",
+      profile_image: "https://picsum.photos/200/300",
     },
   ];
 

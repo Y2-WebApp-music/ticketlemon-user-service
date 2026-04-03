@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
-    "@prisma/client": "^7.5.0",
+    "@prisma/client": "^7.6.0",
     "elysia": "latest"
   },
   "devDependencies": {
     "bun-types": "latest",
     "prettier": "^3.8.1",
-    "prisma": "^7.5.0"
+    "prisma": "^7.6.0"
   },
   "module": "src/index.js"
 }
