@@ -1,8 +1,8 @@
 import { prisma } from "../../lib/db";
-import { User } from "./user.model";
+import { UserSchema } from "./user.model";
 
 export class UserService {
-  async createUser(data: User) {
+  async createUser(data: UserSchema) {
     return prisma.user.create({ data });
   }
 
@@ -14,7 +14,7 @@ export class UserService {
     return prisma.user.findUnique({ where: { id } });
   }
 
-  async updateUser(id: string, data: Partial<User>) {
+  async updateUser(id: string, data: Partial<UserSchema>) {
     return prisma.user.update({ where: { id }, data });
   }
 

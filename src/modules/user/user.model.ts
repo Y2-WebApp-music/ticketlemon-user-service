@@ -10,4 +10,4 @@ export const UserSchema = t.Object({
   profile_image: t.Optional(t.String()),
 });
 
-export type User = typeof UserSchema.static;
+export type UserSchema = typeof UserSchema.static;
