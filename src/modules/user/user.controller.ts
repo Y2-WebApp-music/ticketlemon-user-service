@@ -81,11 +81,8 @@ export const userController = new Elysia({ prefix: "/user" })
         );
       }
 
-      const deletedUser = await service.delete(id);
-      return status(HttpStatus.OK, {
-        message: "User deleted successfully",
-        user: deletedUser,
-      });
+      await service.delete(id);
+      return status(HttpStatus.OK, { message: "User deleted successfully" });
     } catch (error) {
       console.error(error);
       return status(HttpStatus.INTERNAL_SERVER_ERROR);
