@@ -14,4 +14,4 @@ COPY . .
 COPY --from=install /usr/src/app/node_modules ./node_modules
 COPY --from=install /usr/src/app/src/generated ./src/generated
 
-CMD ["bun", "run", "dev"]
+CMD ["bun", "run", "src/index.ts"]

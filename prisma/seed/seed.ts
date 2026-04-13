@@ -2,8 +2,9 @@ import { prisma } from "../../src/lib/db";
 import { UserSchema } from "../../src/modules/user/user.model";
 
 async function main() {
-  const users: UserSchema[] = [
+  const users: (UserSchema & { id: string })[] = [
     {
+      id: "user_001",
       email: "alex.doe@example.com",
       first_name: "Alex",
       last_name: "Doe",
@@ -13,6 +14,7 @@ async function main() {
       profile_image: "https://picsum.photos/200/300",
     },
     {
+      id: "user_002",
       email: "jordan.smith@example.com",
       first_name: "Jordan",
       last_name: "Smith",
@@ -22,6 +24,7 @@ async function main() {
       profile_image: undefined,
     },
     {
+      id: "user_003",
       email: "casey.v@example.com",
       first_name: "Casey",
       last_name: "Vaughan",
