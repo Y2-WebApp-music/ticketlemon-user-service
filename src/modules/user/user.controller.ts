@@ -50,7 +50,7 @@ export const userController = new Elysia({ prefix: "/user" })
     }
   })
 
-  .put("/:id", async ({ params: { id }, body, status }) => {
+  .patch("/:id", async ({ params: { id }, body, status }) => {
     try {
       const user = await service.getById(id);
       if (!user) {
