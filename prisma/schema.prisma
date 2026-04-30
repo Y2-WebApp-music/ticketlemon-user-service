@@ -14,11 +14,11 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
+  id            String  @id @default(uuid())
+  email         String  @unique
   first_name    String
   last_name     String
-  role          Role     @default(user)
+  role          Role    @default(user)
   phone_number  String
   birthdate     String
   gender        String
