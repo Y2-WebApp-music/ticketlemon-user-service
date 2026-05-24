@@ -8,6 +8,7 @@ export const UserSchema = t.Object({
   birthdate: t.String(),
   gender: t.String(),
   profile_image: t.Optional(t.String()),
+  org_name: t.Optional(t.String()),
 });
 
 export type UserSchema = typeof UserSchema.static;

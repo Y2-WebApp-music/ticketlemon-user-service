@@ -23,6 +23,7 @@ model User {
   birthdate     String
   gender        String
   profile_image String?
+  org_name      String? @default("")
 
   @@schema("user_service")
 }
