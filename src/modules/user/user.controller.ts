@@ -6,23 +6,26 @@ import { HttpStatus } from "../../types/http";
 const service = new UserService();
 
 export const userController = new Elysia({ prefix: "/user" })
-  .post("/", async ({ body, status }) => {
-    try {
-      const existingUser = await service.findByEmail(body.email);
-      if (existingUser) {
-        return status(
-          HttpStatus.BAD_REQUEST,
-          { message: "Email already exists" }
-        );
-      }
+  .post(
+    "/",
+    async ({ body, status }) => {
+      try {
+        const existingUser = await service.findByEmail(body.email);
+        if (existingUser) {
+          return status(HttpStatus.BAD_REQUEST, {
+            message: "Email already exists",
+          });
+        }
 
-      const user = await service.create(body);
-      return status(HttpStatus.CREATED, user);
-    } catch (error) {
-      console.error(error);
-      return status(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }, { body: UserSchema })
+        const user = await service.create(body);
+        return status(HttpStatus.CREATED, user);
+      } catch (error) {
+        console.error(error);
+        return status(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    },
+    { body: UserSchema },
+  )
 
   .get("/", async ({ status }) => {
     try {
@@ -38,10 +41,7 @@ export const userController = new Elysia({ prefix: "/user" })
     try {
       const user = await service.getById(id);
       if (!user) {
-        return status(
-          HttpStatus.NOT_FOUND,
-          { message: "User not found" }
-        );
+        return status(HttpStatus.NOT_FOUND, { message: "User not found" });
       }
       return status(HttpStatus.OK, user);
     } catch (error) {
@@ -50,35 +50,33 @@ export const userController = new Elysia({ prefix: "/user" })
     }
   })
 
-  .patch("/:id", async ({ params: { id }, body, status }) => {
-    try {
-      const user = await service.getById(id);
-      if (!user) {
-        return status(
-          HttpStatus.NOT_FOUND,
-          { message: "User not found" }
-        );
-      }
+  .patch(
+    "/:id",
+    async ({ params: { id }, body, status }) => {
+      try {
+        const user = await service.getById(id);
+        if (!user) {
+          return status(HttpStatus.NOT_FOUND, { message: "User not found" });
+        }
 
-      const updatedUser = await service.update(id, body);
-      return status(HttpStatus.OK, {
-        message: "User updated successfully",
-        user: updatedUser,
-      });
-    } catch (error) {
-      console.error(error);
-      return status(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }, { body: t.Partial(UserSchema) })
+        const updatedUser = await service.update(id, body);
+        return status(HttpStatus.OK, {
+          message: "User updated successfully",
+          user: updatedUser,
+        });
+      } catch (error) {
+        console.error(error);
+        return status(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    },
+    { body: t.Partial(UserSchema) },
+  )
 
   .delete("/:id", async ({ params: { id }, status }) => {
     try {
       const user = await service.getById(id);
       if (!user) {
-        return status(
-          HttpStatus.NOT_FOUND,
-          { message: "User not found" }
-        );
+        return status(HttpStatus.NOT_FOUND, { message: "User not found" });
       }
 
       await service.delete(id);
@@ -87,4 +85,4 @@ export const userController = new Elysia({ prefix: "/user" })
       console.error(error);
       return status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-  })
+  });
