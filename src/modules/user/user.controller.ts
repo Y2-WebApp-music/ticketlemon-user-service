@@ -1,7 +1,8 @@
 import { Elysia, t } from "elysia";
 import { UserService } from "./user.service";
-import { UserSchema } from "./user.model";
+import { UserSchema, normalizedUserBody } from "./user.model";
 import { HttpStatus } from "../../types/http";
+import { uploadFile, deleteFile } from "../../utils/fileManager";
 
 const service = new UserService();
 
@@ -10,6 +11,8 @@ export const userController = new Elysia({ prefix: "/user" })
     "/",
     async ({ body, status }) => {
       try {
+        const { profile_image, ...rest } = body as Record<string, any>;
+
         const existingUser = await service.findByEmail(body.email);
         if (existingUser) {
           return status(HttpStatus.BAD_REQUEST, {
@@ -17,7 +20,15 @@ export const userController = new Elysia({ prefix: "/user" })
           });
         }
 
-        const user = await service.create(body);
+        const normalizedProfileImage =
+          profile_image instanceof File ? await uploadFile(profile_image) : profile_image;
+
+        const payload = normalizedUserBody({
+          ...rest,
+          profile_image: normalizedProfileImage,
+        });
+
+        const user = await service.create(payload);
         return status(HttpStatus.CREATED, user);
       } catch (error) {
         console.error(error);
@@ -59,7 +70,21 @@ export const userController = new Elysia({ prefix: "/user" })
           return status(HttpStatus.NOT_FOUND, { message: "User not found" });
         }
 
-        const updatedUser = await service.update(id, body);
+        const { profile_image, ...rest } = body as Record<string, any>;
+
+        let nextProfileImage = profile_image;
+        if (profile_image instanceof File) {
+          if (user.profile_image) await deleteFile(user.profile_image);
+          nextProfileImage = await uploadFile(profile_image);
+        }
+
+        const payload = normalizedUserBody({
+          ...user,
+          ...rest,
+          ...(nextProfileImage !== undefined && { profile_image: nextProfileImage }),
+        });
+
+        const updatedUser = await service.update(id, payload);
         return status(HttpStatus.OK, {
           message: "User updated successfully",
           user: updatedUser,
