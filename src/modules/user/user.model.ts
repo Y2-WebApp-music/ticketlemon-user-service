@@ -9,6 +9,7 @@ export const UserSchema = t.Object({
   gender: t.String(),
   profile_image: t.Optional(t.Any()),
   org_name: t.Optional(t.String()),
+  role: t.Optional(t.Union([t.Literal("user"), t.Literal("organizer")])),
 });
 export type UserSchema = typeof UserSchema.static;
 
@@ -22,5 +23,6 @@ export const normalizedUserBody = (value: any) => {
     gender: value.gender,
     profile_image: value.profile_image,
     org_name: value.org_name,
+    ...(value.role !== undefined && { role: value.role }),
   };
 };
